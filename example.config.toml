@@ -1,0 +1,30 @@
+[frontend]
+# Title at the top of the page
+title = "Veranstaltungen"
+# The icon in the title bar
+icon = "/logo.png"
+# The theme color of the interface, colored items will have this color
+themeColor = "#EC6500"
+
+[calendar]
+# The timezone of the calendar, see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timeZone = "Europe/Berlin"
+# The interval in seconds in which the calendar is refreshed
+refreshInterval = 300
+# The calendars to request from nextcloud
+# name: The name of the calendar as shown in the "description" of the event in the ui
+# url: The "internal url" of the calendar, you can find it in the settings of the calendar in nextcloud
+calendars = [
+    { name = "Test", url = "https://cloud.boecker.dev/remote.php/dav/calendars/admin/stadtteilzentrum-nordstadt-test/" },
+    { name = "Test 2", url = "https://cloud.boecker.dev/remote.php/dav/calendars/admin/test-2/" },
+]
+# trigger keywords in the title of an event to not show the event
+ignoreKeywords = ["!internal!"]
+# The time in seconds after which an event is considered "old" and will be hidden
+# set to 0 to disable hiding of old events of the day
+timeout = 0
+# auth for the calendar requests
+# type: "basic" for basic auth (only supported option atm)
+# username: the username for the basic auth
+# password: the password for the basic auth
+auth = { type = "basic", username = "calendar", password = "abc" }

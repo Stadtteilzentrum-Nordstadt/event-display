@@ -1,6 +1,6 @@
 "use server";
 
-import EventList from "~/components/event-list";
+import EventList, { Event } from "~/components/event-list";
 import RefreshComponent from "~/components/refresh-component";
 import filterEvents from "~/lib/filter-events";
 import getCalendar from "~/lib/get-calendar";
@@ -33,16 +33,16 @@ export default async function HomePage() {
   );
 }
 
-// function testData() {
-//   return {
-//     time: new Date(),
-//     events: Array.from(Array(200).keys()).map((_, i) => ({
-//       id: i.toString(),
-//       title: `Event ${i}`,
-//       description: `Description of event ${i}`,
-//       level: `${i}. OG`,
-//       times: [{ start: new Date(), end: new Date() }],
-//     })) as Event[],
-//     error: null,
-//   };
-// }
+function testData() {
+  return {
+    time: new Date(),
+    events: Array.from(Array(15).keys()).map((_, i) => ({
+      id: i.toString(),
+      title: `Event ${i}`,
+      description: `Room ${i}`,
+      level: `${i}. OG`,
+      times: [{ start: new Date(), end: new Date() }],
+    })) as Event[],
+    error: null,
+  };
+}

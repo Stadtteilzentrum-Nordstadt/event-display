@@ -18,6 +18,8 @@ const AppConfigSchema = z.object({
     calendars: z.array(
       z.object({
         name: z.string(),
+        location: z.string().optional(),
+        hideName: z.boolean().optional(),
         url: z.string(),
       }),
     ),

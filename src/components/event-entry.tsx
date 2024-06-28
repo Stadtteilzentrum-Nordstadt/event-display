@@ -9,7 +9,7 @@ export const EventEntry = forwardRef(function EventEntry(
   ref: React.Ref<HTMLDivElement>,
 ) {
   return (
-    <div className="grid grid-flow-row grid-cols-5 p-4" ref={ref}>
+    <div className="grid min-h-20 grid-flow-row grid-cols-5 p-4" ref={ref}>
       <div className="flex flex-col font-medium">
         {props.event.times.map((time) => (
           <div
@@ -28,9 +28,11 @@ export const EventEntry = forwardRef(function EventEntry(
           </div>
         ))}
       </div>
-      <div className="col-span-3">
+      <div className="flex flex-col col-span-3 justify-center">
         <h3 className="font-semibold">{props.event.title}</h3>
-        <p className="font-regular">{props.event.description}</p>
+        {props.event.description && (
+          <p className="font-regular">{props.event.description}</p>
+        )}
       </div>
       <p className="my-auto justify-self-end font-medium">
         {props.event.level}

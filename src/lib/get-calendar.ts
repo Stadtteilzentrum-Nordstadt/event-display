@@ -75,7 +75,7 @@ export default async function getCalendar(
 
       const text = await calendarResponse.text();
 
-      return parseCalendar(text, calendar.name);
+      return parseCalendar(text, !calendar.hideName ? calendar.name : undefined, calendar.location);
     }),
   );
 
@@ -93,7 +93,11 @@ export default async function getCalendar(
   };
 }
 
-function parseCalendar(text: string, calendarName: string) {
+function parseCalendar(
+  text: string,
+  calendarName?: string,
+  calendarLocation?: string,
+) {
   const parser = new XMLParser({ removeNSPrefix: true });
   const doc = WebDAVCalendarResponseSchema.safeParse(parser.parse(text));
 
@@ -110,13 +114,15 @@ function parseCalendar(text: string, calendarName: string) {
     if (Array.isArray(response)) {
       return {
         time: new Date(),
-        events: response.map((r) => parseResponse(r, calendarName)),
+        events: response.map((r) =>
+          parseResponse(r, calendarName, calendarLocation),
+        ),
       };
     }
 
     return {
       time: new Date(),
-      events: [parseResponse(response, calendarName)],
+      events: [parseResponse(response, calendarName, calendarLocation)],
     };
   }
 
@@ -129,7 +135,8 @@ function parseCalendar(text: string, calendarName: string) {
 
 function parseResponse(
   response: z.infer<typeof responseSchema>,
-  calendarName: string,
+  calendarName?: string,
+  calendarLocation?: string,
 ): Event {
   const data = ical.sync.parseICS(response.propstat.prop["calendar-data"]);
   const event = Object.entries(data)
@@ -147,7 +154,7 @@ function parseResponse(
           },
         ],
         description: calendarName,
-        level: ical.location,
+        level: calendarLocation ?? ical.location,
       } as Event;
     })[0];
 

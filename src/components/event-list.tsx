@@ -45,7 +45,7 @@ export default function EventList(props: {
           }
         }
       }
-    }, props.config.frontend.scrollInterval);
+    }, props.config.frontend.scrollInterval * 1000);
 
     return () => clearInterval(interval);
   }, [props.events, parentRef, childRef, props.config.frontend.scrollInterval]);

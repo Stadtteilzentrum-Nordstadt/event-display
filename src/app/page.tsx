@@ -10,6 +10,7 @@ import { loadConfig } from "./loadConfig";
 export default async function HomePage() {
   const config = await loadConfig();
   const calendar = await getCalendar(config);
+  const events = filterEvents(calendar.events, config);
 
   return (
     <>
@@ -19,13 +20,21 @@ export default async function HomePage() {
         {calendar.error ? (
           <p className="text-red-500">{calendar.error}</p>
         ) : (
-          <EventList
-            events={filterEvents(calendar.events, config)}
-            className="max-h-full flex-grow overflow-y-scroll"
-            config={config}
-          />
+          <>
+            {events.length > 0 ? (
+              <EventList
+                events={events}
+                className="max-h-full flex-grow overflow-y-scroll"
+                config={config}
+              />
+            ) : (
+              <p className="text-center text-2xl">
+                Keine Veranstaltungen heute
+              </p>
+            )}
+          </>
         )}
-        <p className="my-auto text-right font-extralight text-zinc-800">
+        <p className="my-auto text-right mb-0 font-extralight text-zinc-800">
           Aktualisiert: {calendar.time.toLocaleString()}
         </p>
       </main>

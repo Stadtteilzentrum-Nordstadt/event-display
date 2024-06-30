@@ -2,6 +2,10 @@
 
 An app to display events from a nextcloud calendar in the entry hall of the [Stadtteilzentrum Nordstadt e.V.](https://www.stadtteil-zentrum-nordstadt.de/) in Hannover.
 
+## Running
+
+
+
 ## Configuration
 
 There is a `config.toml` to configure every important aspect of the app. The path for this file can be set using the `CONFIG_PATH` environment variable. If this variable is not set, the app will look for a `config.toml` in the current working directory.

@@ -10,7 +10,7 @@ const AppConfigSchema = z.object({
     title: z.string(),
     icon: z.string(),
     themeColor: z.string(),
-    scrollInterval: z.number().default(5000),
+    scrollInterval: z.number().default(10),
   }),
   calendar: z.object({
     timeZone: z.string().default("Europe/Berlin"),

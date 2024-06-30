@@ -1,11 +1,11 @@
-"use server";
-
 import EventList from "~/components/event-list";
 import RefreshComponent from "~/components/refresh-component";
 import filterEvents from "~/lib/filter-events";
 import getCalendar from "~/lib/get-calendar";
 import Header from "./header";
 import { loadConfig } from "./loadConfig";
+
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const config = await loadConfig();

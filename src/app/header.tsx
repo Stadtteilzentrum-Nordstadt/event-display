@@ -1,6 +1,5 @@
 import DateDisplay from "~/components/date-display";
 import { type AppConfig } from "./loadConfig";
-import Image from "next/image";
 
 export default function Header(props: { config: AppConfig }) {
   return (
@@ -13,7 +12,8 @@ export default function Header(props: { config: AppConfig }) {
         <DateDisplay />
       </div>
       <div>
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={props.config.frontend.icon}
           alt="App icon"
           className="h-full "

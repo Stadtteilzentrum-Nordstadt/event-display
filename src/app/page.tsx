@@ -1,6 +1,6 @@
 "use server";
 
-import EventList, { Event } from "~/components/event-list";
+import EventList from "~/components/event-list";
 import RefreshComponent from "~/components/refresh-component";
 import filterEvents from "~/lib/filter-events";
 import getCalendar from "~/lib/get-calendar";
@@ -34,24 +34,10 @@ export default async function HomePage() {
             )}
           </>
         )}
-        <p className="my-auto text-right mb-0 font-extralight text-zinc-800">
+        <p className="my-auto mb-0 text-right font-extralight text-zinc-800">
           Aktualisiert: {calendar.time.toLocaleString()}
         </p>
       </main>
     </>
   );
-}
-
-function testData() {
-  return {
-    time: new Date(),
-    events: Array.from(Array(15).keys()).map((_, i) => ({
-      id: i.toString(),
-      title: `Event ${i}`,
-      description: `Room ${i}`,
-      level: `${i}. OG`,
-      times: [{ start: new Date(), end: new Date() }],
-    })) as Event[],
-    error: null,
-  };
 }

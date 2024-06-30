@@ -96,13 +96,31 @@ export default async function getCalendar(
     events: result
       .flatMap((r) => r.events)
       .reduce<Event[]>((acc, event) => {
-        const existingEvent = acc.find(
+        const timeAccumilation = acc.find(
           (e) => e.description === event.description && e.title === event.title,
         );
 
-        if (existingEvent) {
-          existingEvent.times.push(...event.times);
-        } else {
+        const roomAccumilation = acc.find(
+          (event2) =>
+            event2.title === event.title &&
+            event2.times.every(({ start, end }) => {
+              return event.times.some(
+                ({ start: start2, end: end2 }) =>
+                  dayjs(start).isSame(dayjs(start2), "minute") &&
+                  dayjs(end).isSame(dayjs(end2), "minute"),
+              );
+            }),
+        );
+
+        if (roomAccumilation) {
+          roomAccumilation.description = `${roomAccumilation.description}, ${event.description}`;
+        }
+
+        if (timeAccumilation) {
+          timeAccumilation.times.push(...event.times);
+        }
+
+        if (!timeAccumilation && !roomAccumilation) {
           acc.push(event);
         }
 

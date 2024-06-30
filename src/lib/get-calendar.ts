@@ -75,7 +75,11 @@ export default async function getCalendar(
 
       const text = await calendarResponse.text();
 
-      return parseCalendar(text, !calendar.hideName ? calendar.name : undefined, calendar.location);
+      return parseCalendar(
+        text,
+        !calendar.hideName ? calendar.name : undefined,
+        calendar.location,
+      );
     }),
   );
 
@@ -89,7 +93,21 @@ export default async function getCalendar(
 
   return {
     time: new Date(),
-    events: result.flatMap((r) => r.events),
+    events: result
+      .flatMap((r) => r.events)
+      .reduce<Event[]>((acc, event) => {
+        const existingEvent = acc.find(
+          (e) => e.description === event.description && e.title === event.title,
+        );
+
+        if (existingEvent) {
+          existingEvent.times.push(...event.times);
+        } else {
+          acc.push(event);
+        }
+
+        return acc;
+      }, []),
   };
 }
 

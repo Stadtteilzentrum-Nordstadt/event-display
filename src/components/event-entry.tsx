@@ -11,24 +11,26 @@ export const EventEntry = forwardRef(function EventEntry(
   return (
     <div className="grid min-h-20 grid-flow-row grid-cols-5 p-4" ref={ref}>
       <div className="flex flex-col font-medium">
-        {props.event.times.map((time) => (
-          <div
-            key={time.start.toString() + time.end.toString()}
-            className="my-auto flex flex-row"
-          >
-            <p>
-              {time.start.getHours().toString().padStart(2, "0")}:
-              {time.start.getMinutes().toString().padStart(2, "0")}
-            </p>
-            <p>-</p>
-            <p>
-              {time.end.getHours().toString().padStart(2, "0")}:
-              {time.end.getMinutes().toString().padStart(2, "0")}
-            </p>
-          </div>
-        ))}
+        {props.event.times
+          .sort((a, b) => a.start.getTime() - b.start.getTime())
+          .map((time) => (
+            <div
+              key={time.start.toString() + time.end.toString()}
+              className="my-auto flex flex-row"
+            >
+              <p>
+                {time.start.getHours().toString().padStart(2, "0")}:
+                {time.start.getMinutes().toString().padStart(2, "0")}
+              </p>
+              <p>-</p>
+              <p>
+                {time.end.getHours().toString().padStart(2, "0")}:
+                {time.end.getMinutes().toString().padStart(2, "0")}
+              </p>
+            </div>
+          ))}
       </div>
-      <div className="flex flex-col col-span-3 justify-center">
+      <div className="col-span-3 flex flex-col justify-center">
         <h3 className="font-semibold">{props.event.title}</h3>
         {props.event.description && (
           <p className="font-regular">{props.event.description}</p>

@@ -2,6 +2,10 @@
 
 An app to display events from a nextcloud calendar in the entry hall of the [Stadtteilzentrum Nordstadt e.V.](https://www.stadtteil-zentrum-nordstadt.de/) in Hannover.
 
+## License
+
+This software is licensed under GNU Affero General Public License V3. For more details see LICENSE.
+
 ## Running
 
 

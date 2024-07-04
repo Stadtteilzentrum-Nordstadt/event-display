@@ -49,3 +49,5 @@ timeout = 0
 # type: The type of authentication, currently only "basic" is supported (optional)
 auth = { type = "basic", username = "kalendar", password = "abcdefg" }
 ```
+## Financing
+This software has been built from public money. For more info, why publicly funded software should be public code, visit https://publiccode.eu/, an initiative by [Free Software Foundation Europe](https://fsfe.org/).

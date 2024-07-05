@@ -11,7 +11,7 @@ it can be used in a docker-compose.yml like this:
 version: '3.8'
 
 services:
-  rmbg-server:
+  event-display:
     image: "ghcr.io/stadtteilzentrum-nordstadt/event-display:main"
     environment:
       CONFIG_PATH: /config.toml

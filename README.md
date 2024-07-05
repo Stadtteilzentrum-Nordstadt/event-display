@@ -2,13 +2,26 @@
 
 An app to display events from a nextcloud calendar in the entry hall of the [Stadtteilzentrum Nordstadt e.V.](https://www.stadtteil-zentrum-nordstadt.de/) in Hannover.
 
-## License
-
-This software is licensed under GNU Affero General Public License V3. For more details see LICENSE.
-
 ## Running
 
+There is a docker image available on the github package registy: `ghcr.io/stadtteilzentrum-nordstadt/event-display:main`
 
+it can be used in a docker-compose.yml like this:
+```
+version: '3.8'
+
+services:
+  rmbg-server:
+    image: "ghcr.io/stadtteilzentrum-nordstadt/event-display:main"
+    environment:
+      CONFIG_PATH: /config.toml
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config.toml:/config.toml
+```
+
+You can also build the docker image yourself using the [Dockerfile](/Dockerfile)
 
 ## Configuration
 
@@ -49,5 +62,9 @@ timeout = 0
 # type: The type of authentication, currently only "basic" is supported (optional)
 auth = { type = "basic", username = "kalendar", password = "abcdefg" }
 ```
+
+## License
+This software is licensed under GNU Affero General Public License V3. For more details see LICENSE.
+
 ## Financing
 This software has been built from public money. For more info, why publicly funded software should be public code, visit https://publiccode.eu/, an initiative by [Free Software Foundation Europe](https://fsfe.org/).

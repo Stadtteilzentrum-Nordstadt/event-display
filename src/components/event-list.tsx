@@ -11,6 +11,8 @@ export type Event = {
   times: { start: Date; end: Date }[];
   description?: string;
   level: string;
+  allDay: boolean;
+  status: "TENTATIVE" | "CONFIRMED" | "CANCELLED";
 };
 
 export default function EventList(props: {

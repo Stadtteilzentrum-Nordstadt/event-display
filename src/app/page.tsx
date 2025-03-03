@@ -35,7 +35,7 @@ export default async function HomePage() {
           </>
         )}
         <p className="my-auto mb-0 text-right font-extralight text-zinc-800">
-          Aktualisiert: {calendar.time.toLocaleString()}
+          Aktualisiert: {calendar.time.toLocaleString("de")}
         </p>
       </main>
     </>

@@ -4,7 +4,6 @@ import { type Event } from "./event-list";
 export const EventEntry = forwardRef(function EventEntry(
   props: {
     event: Event;
-    ref: React.RefObject<HTMLDivElement>;
   },
   ref: React.Ref<HTMLDivElement>,
 ) {
@@ -18,15 +17,21 @@ export const EventEntry = forwardRef(function EventEntry(
               key={time.start.toString() + time.end.toString()}
               className="my-auto flex flex-row"
             >
-              <p>
-                {time.start.getHours().toString().padStart(2, "0")}:
-                {time.start.getMinutes().toString().padStart(2, "0")}
-              </p>
-              <p>-</p>
-              <p>
-                {time.end.getHours().toString().padStart(2, "0")}:
-                {time.end.getMinutes().toString().padStart(2, "0")}
-              </p>
+              {props.event.allDay ? (
+                <p>ganztägig</p>
+              ) : (
+                <>
+                  <p>
+                    {time.start.getHours().toString().padStart(2, "0")}:
+                    {time.start.getMinutes().toString().padStart(2, "0")}
+                  </p>
+                  <p>-</p>
+                  <p>
+                    {time.end.getHours().toString().padStart(2, "0")}:
+                    {time.end.getMinutes().toString().padStart(2, "0")}
+                  </p>
+                </>
+              )}
             </div>
           ))}
       </div>

@@ -9,23 +9,25 @@ import { z } from "zod";
 import { type Event } from "~/components/event-list";
 import ical from "node-ical";
 
+const propSchema = z.object({
+  prop: z.object({
+    "calendar-data": z.string().optional(),
+  }),
+  status: z.string(),
+});
+
 const responseSchema = z.object({
   href: z.string(),
-  propstat: z.object({
-    prop: z.object({
-      getetag: z.string(),
-      "calendar-data": z.string(),
-    }),
-    status: z.string(),
-  }),
+  propstat: propSchema.or(z.array(propSchema)),
 });
 
 const WebDAVCalendarResponseSchema = z.object({
   multistatus: z
     .object({
-      response: z.union([responseSchema, z.array(responseSchema)]),
+      response: responseSchema.or(z.array(responseSchema)),
     })
-    .or(z.literal("")),
+    .or(z.literal(""))
+    .optional(),
 });
 
 export type WebDAVCalendarResponse = z.infer<
@@ -66,14 +68,17 @@ export default async function getCalendar(
         },
         body: `\
                 <x1:calendar-query xmlns:x1="urn:ietf:params:xml:ns:caldav"> \
-                <x0:prop xmlns:x0="DAV:"><x0:getetag/><x1:calendar-data/></x0:prop> \
-                <x1:filter><x1:comp-filter name="VCALENDAR"><x1:comp-filter name="VEVENT"> \
+                <x0:prop xmlns:x0="DAV:"><x0:getcontenttype/><x0:getetag/><x0:resourcetype/><x0:displayname/><x0:owner/><x0:resourcetype/> \
+                <x0:sync-token/><x0:current-user-privilege-set/><x0:getcontenttype/><x0:getetag/><x0:resourcetype/><x1:calendar-data/> \
+                </x0:prop><x1:filter><x1:comp-filter name="VCALENDAR"><x1:comp-filter name="VEVENT"> \
                 <x1:time-range start="${dayStartFormat}" end="${dayEndFormat}"/> \
-                </x1:comp-filter></x1:comp-filter></x1:filter></x1:calendar-query> \
+                </x1:comp-filter></x1:comp-filter></x1:filter></x1:calendar-query>
                 `,
       });
 
       const text = await calendarResponse.text();
+
+      console.log(text);
 
       return parseCalendar(
         text,
@@ -94,8 +99,10 @@ export default async function getCalendar(
   return {
     time: new Date(),
     events: result
-      .flatMap((r) => r.events)
-      .reduce<Event[]>((acc, event) => {
+      .flatMap((r) => r.events.filter((e) => e != null))
+      .reduce<Event[]>((acc, e) => {
+        const event = e!;
+
         const timeAccumilation = acc.find(
           (e) => e.description === event.description && e.title === event.title,
         );
@@ -145,7 +152,7 @@ function parseCalendar(
       };
     }
 
-    const response = doc.data.multistatus.response;
+    const response = doc.data.multistatus?.response ?? [];
 
     if (Array.isArray(response)) {
       return {
@@ -162,6 +169,8 @@ function parseCalendar(
     };
   }
 
+  console.log(doc.error);
+
   return {
     time: new Date(),
     events: [] as Event[],
@@ -173,24 +182,37 @@ function parseResponse(
   response: z.infer<typeof responseSchema>,
   calendarName?: string,
   calendarLocation?: string,
-): Event {
-  const data = ical.sync.parseICS(response.propstat.prop["calendar-data"]);
+): Event | undefined {
+  const propstat = Array.isArray(response.propstat)
+    ? response.propstat.find((ps) => ps.status.includes("200 OK"))
+    : response.propstat;
+
+  if (!propstat?.status.includes("200 OK")) {
+    return undefined;
+  }
+
+  const data = ical.sync.parseICS(propstat.prop["calendar-data"]!);
   const event = Object.entries(data)
     .filter(([_, value]) => value.type === "VEVENT")
     .map(([key, value]) => {
       const ical = value as ical.VEvent;
 
+      const start = dayjs(ical.start);
+      const end = dayjs(ical.end);
+
       return {
         id: key,
-        title: ical.summary,
+        title: ical.summary ?? "Unbenanntes Event",
         times: [
           {
-            start: dayjs(ical.start).toDate(),
-            end: dayjs(ical.end).toDate(),
+            start: start.toDate(),
+            end: end.toDate(),
           },
         ],
+        allDay: start.isSame(end.subtract(1, "day")),
         description: calendarName,
-        level: calendarLocation ?? ical.location,
+        level: ical.location ?? calendarLocation ?? "",
+        status: ical.status,
       } as Event;
     })[0];
 

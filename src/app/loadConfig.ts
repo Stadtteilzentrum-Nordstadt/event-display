@@ -18,12 +18,14 @@ const AppConfigSchema = z.object({
     calendars: z.array(
       z.object({
         name: z.string(),
+        url: z.string(),
         location: z.string().optional(),
         hideName: z.boolean().optional(),
-        url: z.string(),
+        color: z.string().optional(),
       }),
     ),
     ignoreKeywords: z.array(z.string()).default([]),
+    openEndKeywords: z.array(z.string()).default([]),
     timeout: z.number().default(0),
     auth: z.object({
       type: z.enum(["basic"]).default("basic"),

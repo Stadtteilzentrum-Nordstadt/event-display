@@ -12,6 +12,8 @@ export type Event = {
   description?: string;
   level: string;
   allDay: boolean;
+  color?: string;
+  openEnd?: boolean;
   status: "TENTATIVE" | "CONFIRMED" | "CANCELLED";
 };
 

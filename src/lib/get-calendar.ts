@@ -54,6 +54,7 @@ export default async function getCalendar(
   const dayStartFormat = dayStart.format("YYYYMMDDTHHmmss[Z]");
   const dayEndFormat = dayEnd.format("YYYYMMDDTHHmmss[Z]");
 
+  // request and parse all calenders
   const result = await Promise.all(
     config.calendar.calendars.map(async (calendar) => {
       const calendarResponse = await fetch(calendar.url, {
@@ -80,11 +81,7 @@ export default async function getCalendar(
 
       console.log(text);
 
-      return parseCalendar(
-        text,
-        !calendar.hideName ? calendar.name : undefined,
-        calendar.location,
-      );
+      return parseCalendar(text, config, calendar);
     }),
   );
 
@@ -138,8 +135,8 @@ export default async function getCalendar(
 
 function parseCalendar(
   text: string,
-  calendarName?: string,
-  calendarLocation?: string,
+  config: AppConfig,
+  calendarConfig: AppConfig["calendar"]["calendars"][0],
 ) {
   const parser = new XMLParser({ removeNSPrefix: true });
   const doc = WebDAVCalendarResponseSchema.safeParse(parser.parse(text));
@@ -157,15 +154,13 @@ function parseCalendar(
     if (Array.isArray(response)) {
       return {
         time: new Date(),
-        events: response.map((r) =>
-          parseResponse(r, calendarName, calendarLocation),
-        ),
+        events: response.map((r) => parseResponse(r, config, calendarConfig)),
       };
     }
 
     return {
       time: new Date(),
-      events: [parseResponse(response, calendarName, calendarLocation)],
+      events: [parseResponse(response, config, calendarConfig)],
     };
   }
 
@@ -180,8 +175,8 @@ function parseCalendar(
 
 function parseResponse(
   response: z.infer<typeof responseSchema>,
-  calendarName?: string,
-  calendarLocation?: string,
+  config: AppConfig,
+  calendarConfig: AppConfig["calendar"]["calendars"][0],
 ): Event | undefined {
   const propstat = Array.isArray(response.propstat)
     ? response.propstat.find((ps) => ps.status.includes("200 OK"))
@@ -192,6 +187,7 @@ function parseResponse(
   }
 
   const data = ical.sync.parseICS(propstat.prop["calendar-data"]!);
+
   const event = Object.entries(data)
     .filter(([_, value]) => value.type === "VEVENT")
     .map(([key, value]) => {
@@ -202,7 +198,7 @@ function parseResponse(
 
       return {
         id: key,
-        title: ical.summary ?? "Unbenanntes Event",
+        title: ical.summary ?? "Unbenannte Veranstaltung",
         times: [
           {
             start: start.toDate(),
@@ -210,8 +206,14 @@ function parseResponse(
           },
         ],
         allDay: start.isSame(end.subtract(1, "day")),
-        description: calendarName,
-        level: ical.location ?? calendarLocation ?? "",
+        description: !calendarConfig.hideName ? calendarConfig.name : undefined,
+        level: ical.location ?? calendarConfig.location ?? "",
+        color: calendarConfig.color,
+        openEnd: config.calendar.openEndKeywords.some(
+          (keyword) =>
+            ical.description?.includes(keyword) ||
+            ical.summary?.includes(keyword),
+        ),
         status: ical.status,
       } as Event;
     })[0];

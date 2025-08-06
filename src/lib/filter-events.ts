@@ -7,9 +7,7 @@ export default function filterEvents(
 ): Event[] {
   return events.filter(
     (event) =>
-      !config.calendar.ignoreKeywords.some((keyword) =>
-        event.title.includes(keyword),
-      ) &&
+      !event.private &&
       (config.calendar.timeout !== 0
         ? event.times.some(
             (time) =>

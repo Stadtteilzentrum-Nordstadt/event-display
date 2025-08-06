@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import { type Event } from "./event-list";
 import clsx from "clsx";
+import dayjs from "dayjs";
 
 export const EventEntry = forwardRef(function EventEntry(
   props: {
@@ -12,7 +13,7 @@ export const EventEntry = forwardRef(function EventEntry(
     <div
       className={clsx(
         "relative grid min-h-20 grid-flow-row grid-cols-5 p-4",
-        props.event.status === "CANCELLED" && "text-red-600",
+        props.event.status === "CANCELLED" && "text-red-500",
       )}
       ref={ref}
     >
@@ -34,18 +35,40 @@ export const EventEntry = forwardRef(function EventEntry(
                     <p>ganztägig</p>
                   ) : (
                     <>
-                      <p>
-                        {props.event.openEnd ? "ab " : ""}
-                        {time.start.getHours().toString().padStart(2, "0")}:
-                        {time.start.getMinutes().toString().padStart(2, "0")}
-                      </p>
-                      {!props.event.openEnd && (
+                      {dayjs(time.start).isBefore(dayjs().startOf("day")) ? (
                         <>
-                          <p>-</p>
                           <p>
+                            {"bis "}
                             {time.end.getHours().toString().padStart(2, "0")}:
                             {time.end.getMinutes().toString().padStart(2, "0")}
                           </p>
+                        </>
+                      ) : (
+                        <>
+                          <p>
+                            {props.event.openEnd && "ab "}
+                            {time.start.getHours().toString().padStart(2, "0")}:
+                            {time.start
+                              .getMinutes()
+                              .toString()
+                              .padStart(2, "0")}
+                          </p>
+                          {!props.event.openEnd && (
+                            <>
+                              <p>-</p>
+                              <p>
+                                {time.end
+                                  .getHours()
+                                  .toString()
+                                  .padStart(2, "0")}
+                                :
+                                {time.end
+                                  .getMinutes()
+                                  .toString()
+                                  .padStart(2, "0")}
+                              </p>
+                            </>
+                          )}
                         </>
                       )}
                     </>

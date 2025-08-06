@@ -196,23 +196,44 @@ function parseResponse(
       const start = dayjs(ical.start);
       const end = dayjs(ical.end);
 
+      let eventTitle = ical.summary ?? "Unbenannte Veranstaltung";
+
+      config.calendar.openEndKeywords.forEach((keyword) => {
+        eventTitle = eventTitle.replace(keyword, "");
+      });
+
+      // @ts-expect-error ical.categories is not typed
+      const categories = (ical.categories as string[]) ?? [];
+
+      const currentDayStart = dayjs().startOf("day");
+      const currentDayEnd = dayjs().endOf("day");
+
       return {
         id: key,
-        title: ical.summary ?? "Unbenannte Veranstaltung",
+        title: eventTitle,
         times: [
           {
             start: start.toDate(),
             end: end.toDate(),
           },
         ],
-        allDay: start.isSame(end.subtract(1, "day")),
-        description: !calendarConfig.hideName ? calendarConfig.name : undefined,
+        allDay:
+          start.isSame(end.subtract(1, "day")) ||
+          (start.isBefore(currentDayStart) && end.isAfter(currentDayEnd)) ||
+          (start.isSame(currentDayStart) && end.isAfter(currentDayEnd)) ||
+          (start.isBefore(currentDayStart) && end.isSame(currentDayEnd)),
+        description: !calendarConfig.hideName
+          ? (ical.description ?? calendarConfig.name)
+          : undefined,
         level: ical.location ?? calendarConfig.location ?? "",
         color: calendarConfig.color,
-        openEnd: config.calendar.openEndKeywords.some(
-          (keyword) =>
-            ical.description?.includes(keyword) ||
-            ical.summary?.includes(keyword),
+        openEnd:
+          config.calendar.openEndKeywords.some((keyword) =>
+            categories.includes(keyword),
+          ) ||
+          (start.isAfter(currentDayStart) && end.isAfter(currentDayEnd)),
+        private: config.calendar.ignoreKeywords.some((keyword) =>
+          categories.includes(keyword),
         ),
         status: ical.status,
       } as Event;

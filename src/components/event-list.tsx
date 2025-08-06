@@ -13,7 +13,8 @@ export type Event = {
   level: string;
   allDay: boolean;
   color?: string;
-  openEnd?: boolean;
+  openEnd: boolean;
+  private: boolean;
   status: "TENTATIVE" | "CONFIRMED" | "CANCELLED";
 };
 

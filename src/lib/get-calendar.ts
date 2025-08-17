@@ -1,5 +1,3 @@
-"use server";
-
 import { XMLParser } from "fast-xml-parser";
 import { type AppConfig } from "~/app/loadConfig";
 import dayjs from "dayjs";
@@ -45,11 +43,12 @@ export type RequestedCalendarResponse = {
 
 export default async function getCalendar(
   config: AppConfig,
+  day: dayjs.Dayjs = dayjs(),
 ): Promise<RequestedCalendarResponse> {
   const timeZone = config.calendar.timeZone;
 
-  const dayStart = dayjs().tz(timeZone).hour(0).minute(0).second(0);
-  const dayEnd = dayStart.add(1, "day");
+  const dayStart = day.tz(timeZone).startOf("day");
+  const dayEnd = dayStart.endOf("day");
 
   const dayStartFormat = dayStart.format("YYYYMMDDTHHmmss[Z]");
   const dayEndFormat = dayEnd.format("YYYYMMDDTHHmmss[Z]");
@@ -79,9 +78,9 @@ export default async function getCalendar(
 
       const text = await calendarResponse.text();
 
-      console.log(text);
+      // console.log(text);
 
-      return parseCalendar(text, config, calendar);
+      return parseCalendar(text, config, calendar, day);
     }),
   );
 
@@ -137,6 +136,7 @@ function parseCalendar(
   text: string,
   config: AppConfig,
   calendarConfig: AppConfig["calendar"]["calendars"][0],
+  currentDay: dayjs.Dayjs = dayjs(),
 ) {
   const parser = new XMLParser({ removeNSPrefix: true });
   const doc = WebDAVCalendarResponseSchema.safeParse(parser.parse(text));
@@ -154,13 +154,15 @@ function parseCalendar(
     if (Array.isArray(response)) {
       return {
         time: new Date(),
-        events: response.map((r) => parseResponse(r, config, calendarConfig)),
+        events: response.map((r) =>
+          parseResponse(r, config, calendarConfig, currentDay),
+        ),
       };
     }
 
     return {
       time: new Date(),
-      events: [parseResponse(response, config, calendarConfig)],
+      events: [parseResponse(response, config, calendarConfig, currentDay)],
     };
   }
 
@@ -177,6 +179,7 @@ function parseResponse(
   response: z.infer<typeof responseSchema>,
   config: AppConfig,
   calendarConfig: AppConfig["calendar"]["calendars"][0],
+  currentDay: dayjs.Dayjs = dayjs(),
 ): Event | undefined {
   const propstat = Array.isArray(response.propstat)
     ? response.propstat.find((ps) => ps.status.includes("200 OK"))
@@ -193,8 +196,35 @@ function parseResponse(
     .map(([key, value]) => {
       const ical = value as ical.VEvent;
 
-      const start = dayjs(ical.start);
-      const end = dayjs(ical.end);
+      let start = dayjs(ical.start);
+      let end = dayjs(ical.end);
+
+      const difference = end.diff(start, "day");
+
+      const recurrences =
+        difference == 0
+          ? ical.rrule?.between(
+              currentDay.startOf("day").toDate(),
+              currentDay.endOf("day").toDate(),
+            )
+          : ical.rrule?.between(
+              currentDay.subtract(difference, "day").startOf("day").toDate(),
+              currentDay.add(difference, "day").endOf("day").toDate(),
+            );
+
+      const newDates = recurrences
+        ? recurrences.map((date) => dayjs(date))
+        : [];
+
+      if (newDates && newDates.length > 0) {
+        start = start.set("date", newDates[0]!.get("date"));
+        start = start.set("month", newDates[0]!.get("month"));
+        start = start.set("year", newDates[0]!.get("year"));
+        end = end.set("date", newDates[0]!.get("date"));
+        end = end.set("month", newDates[0]!.get("month"));
+        end = end.set("year", newDates[0]!.get("year"));
+        end = end.add(difference, "day");
+      }
 
       let eventTitle = ical.summary ?? "Unbenannte Veranstaltung";
 
@@ -205,11 +235,12 @@ function parseResponse(
       // @ts-expect-error ical.categories is not typed
       const categories = (ical.categories as string[]) ?? [];
 
-      const currentDayStart = dayjs().startOf("day");
-      const currentDayEnd = dayjs().endOf("day");
+      const currentDayStart = currentDay.startOf("day");
+      const currentDayEnd = currentDay.endOf("day");
 
       return {
         id: key,
+        calendar: calendarConfig.name,
         title: eventTitle,
         times: [
           {
@@ -219,13 +250,14 @@ function parseResponse(
         ],
         allDay:
           start.isSame(end.subtract(1, "day")) ||
-          (start.isBefore(currentDayStart) && end.isAfter(currentDayEnd)) ||
-          (start.isSame(currentDayStart) && end.isAfter(currentDayEnd)) ||
-          (start.isBefore(currentDayStart) && end.isSame(currentDayEnd)),
+          start.isBefore(currentDayStart) ||
+          start.isSame(currentDayStart) ||
+          end.isAfter(currentDayEnd) ||
+          end.isSame(currentDayEnd),
         description: !calendarConfig.hideName
-          ? (ical.description ?? calendarConfig.name)
+          ? (ical.location ?? calendarConfig.name)
           : undefined,
-        level: ical.location ?? calendarConfig.location ?? "",
+        level: calendarConfig.location ?? "Siehe Geschossübersicht",
         color: calendarConfig.color,
         openEnd:
           config.calendar.openEndKeywords.some((keyword) =>

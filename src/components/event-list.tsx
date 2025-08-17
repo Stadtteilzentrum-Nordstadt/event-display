@@ -4,9 +4,13 @@ import clsx from "clsx";
 import { useEffect, useRef } from "react";
 import { EventEntry } from "./event-entry";
 import { type AppConfig } from "~/app/loadConfig";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 export type Event = {
   id: string;
+  calendar: string;
   title: string;
   times: { start: Date; end: Date }[];
   description?: string;
@@ -23,6 +27,11 @@ export default function EventList(props: {
   className?: string;
   config: AppConfig;
 }) {
+  dayjs.locale("de");
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  dayjs.tz.setDefault(props.config.calendar.timeZone);
+
   const parentRef = useRef<HTMLDivElement | null>(null);
   const childRef = useRef<HTMLDivElement | null>(null);
 

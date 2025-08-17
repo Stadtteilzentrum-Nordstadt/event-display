@@ -7,6 +7,7 @@ An app to display events from a nextcloud calendar in the entry hall of the [Sta
 There is a docker image available on the github package registy: `ghcr.io/stadtteilzentrum-nordstadt/event-display:main`
 
 it can be used in a docker-compose.yml like this:
+
 ```
 version: '3.8'
 
@@ -56,7 +57,7 @@ calendars = [
 ]
 # events that contain this keyword in their title will be ignored and not shown in the event list
 ignoreKeywords = ["!intern!", "!privat!"]
-# time in seconds after which an event is considered to be in the past and will be removed from the event list
+# time in minutes after which an event is considered to be in the past and will be removed from the event list (0 means events will not be removed)
 timeout = 0
 # the auth information for the nextcloud instance (app password), the user must have read access to the calendars specified above
 # type: The type of authentication, currently only "basic" is supported (optional)
@@ -64,7 +65,9 @@ auth = { type = "basic", username = "kalendar", password = "abcdefg" }
 ```
 
 ## License
+
 This software is licensed under GNU Affero General Public License V3. For more details see LICENSE.
 
 ## Financing
+
 This software has been built from public money. For more info, why publicly funded software should be public code, visit https://publiccode.eu/, an initiative by [Free Software Foundation Europe](https://fsfe.org/).

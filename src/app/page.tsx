@@ -12,6 +12,10 @@ export default async function HomePage() {
   const calendar = await getCalendar(config);
   const events = filterEvents(calendar.events, config);
 
+  if (calendar.error) {
+    console.error("Error fetching calendar:", calendar.error);
+  }
+
   return (
     <>
       <Header config={config} />

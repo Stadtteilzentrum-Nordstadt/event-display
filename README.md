@@ -55,8 +55,10 @@ calendars = [
     { name = "Raum A", url = "https://cloud.example.de/remote.php/dav/calendars/kalendar/raum-a/", location = "2. OG", hideName = false },
     { name = "Raum B", url = "https://cloud.example.de/remote.php/dav/calendars/kalendar/raum-b/", location = "2. OG", hideName = false },
 ]
-# events that contain this keyword in their title will be ignored and not shown in the event list
+# events that contain these keywords in their iCal categories will be ignored and not shown in the event list
 ignoreKeywords = ["!intern!", "!privat!"]
+# keywords that will be removed from event titles and mark events as "open end" if found in iCal categories
+openEndKeywords = ["offen", "openend"]
 # time in minutes after which an event is considered to be in the past and will be removed from the event list (0 means events will not be removed)
 timeout = 0
 # the auth information for the nextcloud instance (app password), the user must have read access to the calendars specified above

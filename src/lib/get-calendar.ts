@@ -204,13 +204,13 @@ function parseResponse(
       const recurrences =
         difference == 0
           ? ical.rrule?.between(
-              currentDay.startOf("day").toDate(),
-              currentDay.endOf("day").toDate(),
-            )
+            currentDay.startOf("day").toDate(),
+            currentDay.endOf("day").toDate(),
+          )
           : ical.rrule?.between(
-              currentDay.subtract(difference, "day").startOf("day").toDate(),
-              currentDay.add(difference, "day").endOf("day").toDate(),
-            );
+            currentDay.subtract(difference, "day").startOf("day").toDate(),
+            currentDay.add(difference, "day").endOf("day").toDate(),
+          );
 
       const newDates = recurrences
         ? recurrences.map((date) => dayjs(date))
@@ -257,7 +257,7 @@ function parseResponse(
         description: !calendarConfig.hideName
           ? (ical.location ?? calendarConfig.name)
           : undefined,
-        level: calendarConfig.location ?? "Siehe Geschossübersicht",
+        level: calendarConfig.location ?? ical.location,
         color: calendarConfig.color,
         openEnd:
           config.calendar.openEndKeywords.some((keyword) =>

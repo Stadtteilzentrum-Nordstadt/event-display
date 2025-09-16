@@ -17,7 +17,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className={`${poppins.className} h-full`}>
-      <body className="grid h-full grid-rows-10">
+      <body className="flex h-screen flex-col">
         <ScaleController>{children}</ScaleController>
       </body>
     </html>

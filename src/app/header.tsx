@@ -4,7 +4,7 @@ import { type AppConfig } from "./loadConfig";
 export default function Header(props: { config: AppConfig }) {
   return (
     <header
-      className="static flex items-center justify-between border-b-2 bg-zinc-50 p-8 py-12"
+      className="flex-shrink-0 flex items-center justify-between border-b-2 bg-zinc-50 p-4 py-6 h-24"
       style={{ borderColor: props.config.frontend.themeColor }}
     >
       <div className="flex flex-col text-lg font-medium">

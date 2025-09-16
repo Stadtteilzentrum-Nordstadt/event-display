@@ -19,7 +19,7 @@ export default async function HomePage() {
   return (
     <>
       <Header config={config} />
-      <main className="relative row-span-9 flex max-h-full flex-col bg-zinc-200 p-5">
+      <main className="relative flex-1 flex flex-col bg-zinc-200 p-5 min-h-0">
         <RefreshComponent refreshInterval={config.calendar.refreshInterval} />
         {calendar.error ? (
           <p className="text-red-500">{calendar.error}</p>

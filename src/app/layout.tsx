@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 
 import { Poppins } from "next/font/google";
+import ScaleController from "~/components/dpi-scaler";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -16,7 +17,9 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className={`${poppins.className} h-full`}>
-      <body className="grid h-full grid-rows-10">{children}</body>
+      <body className="grid h-full grid-rows-10">
+        <ScaleController>{children}</ScaleController>
+      </body>
     </html>
   );
 }

@@ -94,7 +94,7 @@ export const EventEntry = forwardRef(function EventEntry(
       </div>
       <p
         className={clsx(
-          "my-auto justify-self-end font-medium",
+          "my-auto justify-self-end font-medium text-right",
           props.event.status === "CANCELLED" && "line-through",
         )}
       >

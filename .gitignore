@@ -44,3 +44,6 @@ yarn-error.log*
 
 # project
 config*.toml
+
+# ignore ics files that may exist for debugging purposes
+*.ics

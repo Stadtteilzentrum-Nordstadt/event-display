@@ -171,7 +171,7 @@ function parseCalendar(
   return {
     time: new Date(),
     events: [] as Event[],
-    error: "Failed to parse response: " + JSON.stringify(doc.error.errors),
+    error: "Failed to parse response: " + JSON.stringify(doc.error.issues),
   };
 }
 

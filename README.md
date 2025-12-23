@@ -2,6 +2,52 @@
 
 An app to display events from a nextcloud calendar in the entry hall of the [Stadtteilzentrum Nordstadt e.V.](https://www.stadtteil-zentrum-nordstadt.de/) in Hannover.
 
+## Development
+
+### Prerequisites
+
+- Node.js 18 or higher
+- npm (comes with Node.js)
+
+### Setup
+
+1. Clone the repository
+2. Copy the example config file and adjust it to your needs:
+   ```bash
+   cp config.toml.example config.toml
+   ```
+3. Edit `config.toml` with your Nextcloud calendar URLs and credentials
+4. Copy the example environment file:
+   ```bash
+   cp .env.example .env.local
+   ```
+5. Install dependencies:
+   ```bash
+   npx pnpm install
+   ```
+6. Start the development server:
+   ```bash
+   npx pnpm dev
+   ```
+
+The app will be available at `http://localhost:3000`.
+
+### Development Features
+
+- Hot reload: Changes to source files are automatically reflected
+- TypeScript support with type checking
+- ESLint for code quality
+- Prettier for code formatting
+
+### Useful Commands
+
+```bash
+npx pnpm dev      # Start development server
+npx pnpm build    # Build for production
+npx pnpm start    # Start production server
+npx pnpm lint     # Run linter
+```
+
 ## Running
 
 There is a docker image available on the github package registy: `ghcr.io/stadtteilzentrum-nordstadt/event-display:main`

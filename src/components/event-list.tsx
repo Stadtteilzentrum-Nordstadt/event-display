@@ -26,6 +26,7 @@ export default function EventList(props: {
   events: Event[];
   className?: string;
   config: AppConfig;
+  referenceDateISO: string;
 }) {
   dayjs.locale("de");
   dayjs.extend(utc);
@@ -80,7 +81,12 @@ export default function EventList(props: {
           return a.times[0]!.start.getTime() - b.times[0]!.start.getTime();
         })
         .map((event) => (
-          <EventEntry event={event} key={event.id} ref={childRef} />
+          <EventEntry
+            event={event}
+            key={event.id}
+            ref={childRef}
+            referenceDateISO={props.referenceDateISO}
+          />
         ))}
     </div>
   );

@@ -38,6 +38,7 @@ The app will be available at `http://localhost:3000`.
 - TypeScript support with type checking
 - ESLint for code quality
 - Prettier for code formatting
+- Debug date override: set `?date=<ISO date>` in the URL (for example `?date=2026-03-28T10:00:00`)
 
 ### Useful Commands
 

@@ -6,9 +6,12 @@ import dayjs from "dayjs";
 export const EventEntry = forwardRef(function EventEntry(
   props: {
     event: Event;
+    referenceDateISO: string;
   },
   ref: React.Ref<HTMLDivElement>,
 ) {
+  const referenceDayStart = dayjs(props.referenceDateISO).startOf("day");
+
   return (
     <div
       className={clsx(
@@ -35,7 +38,7 @@ export const EventEntry = forwardRef(function EventEntry(
                     <p>ganztägig</p>
                   ) : (
                     <>
-                      {dayjs(time.start).isBefore(dayjs().startOf("day")) ? (
+                      {dayjs(time.start).isBefore(referenceDayStart) ? (
                         <>
                           <p>
                             {"bis "}

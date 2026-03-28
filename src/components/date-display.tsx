@@ -1,9 +1,7 @@
 "use client";
 
-export default function DateDisplay(props: { referenceDateISO?: string }) {
-  const date = props.referenceDateISO
-    ? new Date(props.referenceDateISO)
-    : new Date();
+export default function DateDisplay() {
+  const date = new Date();
 
   return (
     <p>

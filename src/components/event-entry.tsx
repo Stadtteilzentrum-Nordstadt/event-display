@@ -11,14 +11,11 @@ dayjs.extend(timezone);
 export const EventEntry = forwardRef(function EventEntry(
   props: {
     event: Event;
-    referenceDateISO: string;
     timeZone: string;
   },
   ref: React.Ref<HTMLDivElement>,
 ) {
   const tz = props.timeZone;
-  const referenceDayStart = dayjs(props.referenceDateISO).tz(tz).startOf("day");
-
   return (
     <div
       className={clsx(
@@ -45,7 +42,7 @@ export const EventEntry = forwardRef(function EventEntry(
                     <p>ganztägig</p>
                   ) : (
                     <>
-                      {dayjs(time.start).tz(tz).isBefore(referenceDayStart) ? (
+                      {dayjs(time.start).tz(tz).isBefore(dayjs().tz(tz).startOf("day")) ? (
                         <>
                           <p>
                             {"bis "}

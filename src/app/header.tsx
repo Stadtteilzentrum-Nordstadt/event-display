@@ -1,10 +1,7 @@
 import DateDisplay from "~/components/date-display";
 import { type AppConfig } from "./loadConfig";
 
-export default function Header(props: {
-  config: AppConfig;
-  referenceDateISO?: string;
-}) {
+export default function Header(props: { config: AppConfig }) {
   return (
     <header
       className="flex-shrink-0 flex items-center justify-between border-b-2 bg-zinc-50 p-4 py-6 h-24"
@@ -12,7 +9,7 @@ export default function Header(props: {
     >
       <div className="flex flex-col text-lg font-medium">
         <h1 className="text-2xl font-bold">{props.config.frontend.title}</h1>
-        <DateDisplay referenceDateISO={props.referenceDateISO} />
+        <DateDisplay />
       </div>
       <div>
         {/* eslint-disable-next-line @next/next/no-img-element */}

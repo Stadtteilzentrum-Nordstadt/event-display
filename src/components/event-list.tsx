@@ -26,7 +26,6 @@ export default function EventList(props: {
   events: Event[];
   className?: string;
   config: AppConfig;
-  referenceDateISO: string;
 }) {
   dayjs.locale("de");
   dayjs.extend(utc);
@@ -85,7 +84,6 @@ export default function EventList(props: {
             event={event}
             key={event.id}
             ref={childRef}
-            referenceDateISO={props.referenceDateISO}
             timeZone={props.config.calendar.timeZone}
           />
         ))}

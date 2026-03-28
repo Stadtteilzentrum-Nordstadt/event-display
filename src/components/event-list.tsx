@@ -86,6 +86,7 @@ export default function EventList(props: {
             key={event.id}
             ref={childRef}
             referenceDateISO={props.referenceDateISO}
+            timeZone={props.config.calendar.timeZone}
           />
         ))}
     </div>

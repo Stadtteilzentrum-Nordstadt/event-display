@@ -2,15 +2,22 @@ import { forwardRef } from "react";
 import { type Event } from "./event-list";
 import clsx from "clsx";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const EventEntry = forwardRef(function EventEntry(
   props: {
     event: Event;
     referenceDateISO: string;
+    timeZone: string;
   },
   ref: React.Ref<HTMLDivElement>,
 ) {
-  const referenceDayStart = dayjs(props.referenceDateISO).startOf("day");
+  const tz = props.timeZone;
+  const referenceDayStart = dayjs(props.referenceDateISO).tz(tz).startOf("day");
 
   return (
     <div
@@ -38,37 +45,28 @@ export const EventEntry = forwardRef(function EventEntry(
                     <p>ganztägig</p>
                   ) : (
                     <>
-                      {dayjs(time.start).isBefore(referenceDayStart) ? (
+                      {dayjs(time.start).tz(tz).isBefore(referenceDayStart) ? (
                         <>
                           <p>
                             {"bis "}
-                            {time.end.getHours().toString().padStart(2, "0")}:
-                            {time.end.getMinutes().toString().padStart(2, "0")}
+                            {dayjs(time.end).tz(tz).format("HH")}:
+                            {dayjs(time.end).tz(tz).format("mm")}
                           </p>
                         </>
                       ) : (
                         <>
                           <p>
                             {props.event.openEnd && "ab "}
-                            {time.start.getHours().toString().padStart(2, "0")}:
-                            {time.start
-                              .getMinutes()
-                              .toString()
-                              .padStart(2, "0")}
+                            {dayjs(time.start).tz(tz).format("HH")}:
+                            {dayjs(time.start).tz(tz).format("mm")}
                           </p>
                           {!props.event.openEnd && (
                             <>
                               <p>-</p>
                               <p>
-                                {time.end
-                                  .getHours()
-                                  .toString()
-                                  .padStart(2, "0")}
+                                {dayjs(time.end).tz(tz).format("HH")}
                                 :
-                                {time.end
-                                  .getMinutes()
-                                  .toString()
-                                  .padStart(2, "0")}
+                                {dayjs(time.end).tz(tz).format("mm")}
                               </p>
                             </>
                           )}

@@ -112,6 +112,42 @@ timeout = 0
 auth = { type = "basic", username = "kalendar", password = "abcdefg" }
 ```
 
+## API
+
+### `GET /api/hours`
+
+Returns the start time of the first event and the end time of the last event of a given day as JSON. All-day events and private events (see `ignoreKeywords`) are excluded.
+
+Query parameters:
+
+- `date` (optional): the day to query, in `YYYY-MM-DD` format. Defaults to the current day if omitted. The date is interpreted in the timezone configured under `[calendar] timeZone`.
+
+Example:
+
+```bash
+curl "http://localhost:3000/api/hours?date=2026-06-10"
+```
+
+Example response:
+
+```json
+{
+  "date": "2026-06-10",
+  "timeZone": "Europe/Berlin",
+  "first": "2026-06-10T06:00:00.000Z",
+  "last": "2026-06-10T16:00:00.000Z",
+  "firstLocal": "08:00",
+  "lastLocal": "18:00",
+  "eventCount": 5
+}
+```
+
+- `first` / `last`: ISO 8601 timestamps (UTC) of the earliest start and latest end. `null` if there are no matching events.
+- `firstLocal` / `lastLocal`: the same times formatted as `HH:mm` in the configured timezone. `null` if there are no matching events.
+- `eventCount`: the number of events considered.
+
+A request with an invalid `date` returns HTTP `400`; an error while fetching the calendar returns HTTP `502`.
+
 ## License
 
 This software is licensed under GNU Affero General Public License V3. For more details see LICENSE.

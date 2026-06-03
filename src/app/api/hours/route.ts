@@ -57,10 +57,8 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     date: day.format(DATE_FORMAT),
     timeZone,
-    first: first?.toISOString() ?? null,
-    last: last?.toISOString() ?? null,
-    firstLocal: first ? dayjs(first).tz(timeZone).format("HH:mm") : null,
-    lastLocal: last ? dayjs(last).tz(timeZone).format("HH:mm") : null,
+    first: first ? dayjs(first).tz(timeZone).format() : null,
+    last: last ? dayjs(last).tz(timeZone).format() : null,
     eventCount: events.length,
   });
 }

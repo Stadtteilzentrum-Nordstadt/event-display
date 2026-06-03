@@ -134,16 +134,13 @@ Example response:
 {
   "date": "2026-06-10",
   "timeZone": "Europe/Berlin",
-  "first": "2026-06-10T06:00:00.000Z",
-  "last": "2026-06-10T16:00:00.000Z",
-  "firstLocal": "08:00",
-  "lastLocal": "18:00",
+  "first": "2026-06-10T08:00:00+02:00",
+  "last": "2026-06-10T18:00:00+02:00",
   "eventCount": 5
 }
 ```
 
-- `first` / `last`: ISO 8601 timestamps (UTC) of the earliest start and latest end. `null` if there are no matching events.
-- `firstLocal` / `lastLocal`: the same times formatted as `HH:mm` in the configured timezone. `null` if there are no matching events.
+- `first` / `last`: ISO 8601 timestamps of the earliest start and latest end, in the configured timezone (including its UTC offset). `null` if there are no matching events.
 - `eventCount`: the number of events considered.
 
 A request with an invalid `date` returns HTTP `400`; an error while fetching the calendar returns HTTP `502`.

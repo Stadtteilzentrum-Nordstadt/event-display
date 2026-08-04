@@ -2,6 +2,10 @@
 
 An app to display events from a nextcloud calendar in the entry hall of the [Stadtteilzentrum Nordstadt e.V.](https://www.stadtteil-zentrum-nordstadt.de/) in Hannover.
 
+## Archival Notice
+
+This repository is read-only. Further development will be done on our own [git instance](https://git.hannover.ccc.de/buergerschule/event-display).
+
 ## Development
 
 ### Prerequisites
